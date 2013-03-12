@@ -1,0 +1,146 @@
+<meta http-equiv="Content-Type" content="text/html; charset=gbk">
+{insert_scripts files='jquery-1.4.4.min.js'}
+<script type="text/javascript">
+    var process_request = "{$lang.process_request}";
+    {literal}
+    jQuery.noConflict();
+jQuery(
+    function()
+    {
+        var allsortLateCall = new lateCall(200,function(){
+            jQuery('#div_allsort').show();
+        });
+        //商品分类
+        jQuery('.allsort').hover(
+            function(){
+                allsortLateCall.start();
+            },
+            function(){
+                allsortLateCall.stop();
+                jQuery('#div_allsort').hide();
+            }
+            );
+       jQuery('.sortlist li').each(
+            function(i)
+            {
+               jQuery(this).hover(
+                    function(){
+                        jQuery(this).addClass('hover');
+                        jQuery('.sublist:eq('+i+')').show();
+                    },
+                    function(){
+                        jQuery(this).removeClass('hover');
+                        jQuery('.sublist:eq('+i+')').hide();
+                    }
+                    );
+            }
+            );
+            
+    }) 
+    {/literal}
+</script>
+
+
+<div class="block clearfix header">
+    <div class="f_l"><a href="../index.php" name="top"><img src="../images/logo.gif" /></a></div>
+    <div class="f_r">
+        <ul>
+
+            <!--{if $navigator_list.top}-->
+            <li id="topNav" >
+                <!-- {foreach name=nav_top_list from=$navigator_list.top item=nav} -->
+                <a href="{$nav.url}" <!-- {if $nav.opennew eq 1} --> target="_blank" <!-- {/if} -->>{$nav.name}</a>
+                <!-- {if !$smarty.foreach.nav_top_list.last} -->
+                |
+                <!-- {/if} -->
+                <!-- {/foreach} -->
+                <div class="topNavR"></div>
+            </li>
+            <!-- {/if} -->
+        </ul>
+
+        {insert_scripts files='transport.js,utils.js'}
+        <font id="ECS_MEMBERZONE">{* ECSHOP 提醒您：根据用户id来调用member_info.lbi显示不同的界面  *} {insert name='member_info'}</font>
+
+    </div>
+</div>
+<div  class="blank"></div>
+<div id="mainNav" class="clearfix">
+    <ul>
+        <li> <a href="../index.php"{if $navigator_list.config.index eq 1} class="cur"{/if}>{$lang.home}<span></span></a></li>
+        <!-- {foreach name=nav_middle_list from=$navigator_list.middle item=nav} -->
+         <li>
+            <a href="{$nav.url}" {if $nav.opennew eq 1}target="_blank" {/if} {if $nav.active eq 1} class="cur"{/if}>{$nav.name}<span></span></a>
+            </li>
+            <!-- {/foreach} -->
+    </ul>  
+   
+</div>
+<!--search start-->
+
+<!--search end-->
+<div class="searchbar">
+    <div class="allsort">
+         <script type="text/javascript">
+            {literal}
+            <!--
+            function checkSearchForm()
+            {
+                if(document.getElementById('keyword').value)
+                {
+                    return true;
+                }
+                else
+                {
+                    alert("{$lang.no_keywords}");
+                    return false;
+                }
+            }
+            -->
+            {/literal}
+        </script>
+        <a href="javascript:void(0);">全部商品分类</a>
+        <ul id="div_allsort" class="sortlist" style="display: none;">
+            <!--{foreach from=$categories item=cat}-->
+            <li class="">
+                <h2>
+                    <a href="{$cat.url}">{$cat.name|escape:html}</a>
+                </h2>
+                <div class="sublist" style="display: none;">
+                    <div class="items">
+                        <strong>选择分类</strong>
+                        <!--{foreach from=$cat.cat_id item=child}-->
+                        <dl class="category selected">
+                            <dt>
+                            <a href="{$child.url}">{$child.name|escape:html}</a>
+                            </dt>
+                            <dd>
+                                <!--{foreach from=$child.cat_id item=childer}-->
+                                <a href="{$childer.url}">{$childer.name|escape:html}</a>
+                                |
+                                <!--{/foreach}-->
+                            </dd>
+                        </dl>
+                        <!--{/foreach}-->
+                    </div>
+                </div>
+            </li>
+            <!--{/foreach}-->
+        </ul>
+    </div>
+    <div class="searchbox">
+        <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()" class="f_r"  style="_position:relative; top:5px;">
+            <input name="keywords" type="text" id="keyword" value="{$search_keywords|escape}" class="B_input" style="height: 20px; line-height: 20px;margin-left: 8px;margin-top: 5px;width: 203px;"/>
+            <input name="imageField"  type="submit" value="商品搜索" class="btn"  style="cursor:pointer;" />
+        </form>
+    </div>
+    <div class="hotwords">
+       {if $searchkeywords}
+        {$lang.hot_search} ：
+        {foreach from=$searchkeywords item=val}
+        <a href="search.php?keywords={$val|escape:url}">{$val}</a>
+        {/foreach}
+        {/if}
+    </div>
+</div>
+<div class="blank"></div>
